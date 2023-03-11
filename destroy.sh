@@ -54,6 +54,7 @@ while read line; do
     virsh destroy --domain $NAME
     virsh undefine --domain $NAME
     rm -rf $VOLUME_POOL/$NAME
+    virsh pool-undefine $NAME
 
     #unset parsed data
     unset NAME
