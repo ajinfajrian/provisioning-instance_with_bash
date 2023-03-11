@@ -8,7 +8,7 @@ while read line; do
   if [[ $line == NAME=* ]]; then
     NAME=${line#*=}
     NAME=${NAME//\"}
-    MAC=$(randmac -q)
+    MAC=$(date +%s | md5sum | head -c 6 | sed -e 's/\([0-9A-Fa-f]\{2\}\)/\1:/g' -e 's/\(.*\):$/\1/' | sed -e 's/^/52:54:00:/')
   fi
 
   #check if line contains CPU
@@ -84,9 +84,12 @@ EOF
     #create meta-data for cloud-init
     echo "instance-id: $NAME" > $VOLUME_POOL/$NAME/meta-data
     echo "local-hostname: $NAME" >> $VOLUME_POOL/$NAME/meta-data
-
-    cloud-localds -v $VOLUME_POOL/$NAME/cloud-init.iso $VOLUME_POOL/$NAME/user-data $VOLUME_POOL/$NAME/meta-data
-
+    
+    # cloud-localds not supported on rhel, rocky, alma.
+    # cloud-localds -v $VOLUME_POOL/$NAME/cloud-init.iso $VOLUME_POOL/$NAME/user-data $VOLUME_POOL/$NAME/meta-data
+    
+    genisoimage  -output /kvm/instance/$NAME/cloud-init.iso -volid cidata -joliet -rock /kvm/instance/$NAME/user-data /kvm/instance/$NAME/meta-data
+    
     printf "\n =========== Configure Network =========== \n\n"
     virsh net-update $NET_NAME add ip-dhcp-host --xml "<host mac='$MAC' name='$NAME' ip='$IP'/>" --live --config
     virsh net-update $NET_NAME add dns-host "<host ip='$IP'><hostname>$NAME</hostname></host>" --config --live
