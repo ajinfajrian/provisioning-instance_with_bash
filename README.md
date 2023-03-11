@@ -48,7 +48,7 @@ mdir /data/{instance,isos}
 3. running with `bash provisioning.sh`
 
 
-** Notes: if you wanna provisioning another kvm, pls backup `genvariable` file. and create another one `genvariable` file
+> Notes: if you wanna provisioning another kvm, pls backup `genvariable` file. and create another one `genvariable` file
 
 ## How to destroy kvm:
 
