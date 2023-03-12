@@ -2,6 +2,36 @@
 VOLUME_POOL=/data/instance
 IMAGE_POOL=/data/isos
 
+# create network first
+
+PRE_NET_NAME=$(cat ./genvariable | grep NET_NAME | tr -d 'NET_NAME=' | uniq )
+NET_SUB=$(echo $PRE_NET_NAME | tr -dc '0-9,.')
+ID_NET=$(echo $((RANDOM % 9000 + 1000)))
+
+printf "\n ====== Create Network ======\n"
+
+cat > ./net-$NET_SUB.xml << EOF
+<network>
+  <name>$PRE_NET_NAME</name>
+  <forward mode='route'/>
+  <bridge name='virbr$ID_NET' stp='on' delay='0'/>
+  <ip address='$NET_SUB.0' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='$NET_SUB.5' end='$NET_SUB.254'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+
+printf "\n ======== Start Network ========\n"
+
+virsh net-define --file ./net-$NET_SUB.xml
+virsh net-start $PRE_NET_NAME
+virsh net-autostart $PRE_NET_NAME
+
+rm -rf ./net-$NET_SUB.xml
+
+
 #parse data from source.txt
 while read line; do
   #check if line contains NAME
