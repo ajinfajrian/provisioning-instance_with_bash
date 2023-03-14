@@ -2,6 +2,14 @@
 VOLUME_POOL=/data/instance
 IMAGE_POOL=/data/isos
 
+PRE_NET_NAME=$(cat ./genvariable | grep NET_NAME | tr -d 'NET_NAME=' | uniq)
+NET_SUB=$(echo $PRE_NET_NAME | tr -dc '0-9,.')
+
+printf "\n ======== Destroy Network ========\n"
+
+virsh net-destroy $PRE_NET_NAME
+virsh net-undefine $PRE_NET_NAME
+
 #parse data from source.txt
 while read line; do
   #check if line contains NAME
@@ -45,15 +53,12 @@ while read line; do
   #provisioning instance with parsed data
   if [[ -n $NAME && -n $CPU && -n $RAM && -n $DISK && -n $IP && -n $NET_NAME && -n $NAME_IMAGE ]]; then
 
-    MAC_EXIST=$( virsh net-dumpxml $NET_NAME | grep $IP |  grep -o -E ..:..:..:..:..:..)
-    printf "\n=========== Delete Static IP = $IP ============\n"
-    virsh net-update $NET_NAME delete ip-dhcp-host --xml  "<host mac='$MAC_EXIST' name='$NAME' ip='$IP'/>" --live --config
-    virsh net-update $NET_NAME delete dns-host "<host ip='$IP'><hostname>$NAME</hostname></host>" --config --live
-
     printf "\n=========== Destroy & Remove instance $NAME ============\n \n"
     virsh destroy --domain $NAME
     virsh undefine --domain $NAME
     rm -rf $VOLUME_POOL/$NAME
+    virsh pool-destroy $NAME
+    virsh pool-undefine $NAME
 
     #unset parsed data
     unset NAME

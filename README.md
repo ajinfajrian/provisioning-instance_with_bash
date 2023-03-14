@@ -41,7 +41,7 @@ mdir /data/{instance,isos}
 
 ## How to provisioning KVM:
 
-1. change `genvariable` with your custom resorce
+1. change `genvariable` with your custom resorce. (NET_NAME must format `xxx-<subnet>`. Ex. k8s-net-172.18.20)
 
 2. set default path from volume and image pool, also custom the cloud-init in `provisioning.sh`
 
