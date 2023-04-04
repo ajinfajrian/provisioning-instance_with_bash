@@ -26,13 +26,18 @@ sudo dnf groupinstall "Virtualization Host"
 sudo dnf instal genisoimage
 ```
 
-2. Clone repository
+4. Join your user to libvirt group
+```bash
+sudo usermod -aG libvirt $USER && sudo usermod -aG kvm $USER
+```
+
+3. Clone repository
 
 ```bash
 git clone https://github.com/ajinfajrian/provisioning-instance_with_bash.git
 ```
 
-3. Create volume pool, and image pool
+4. Create volume pool, and image pool
 
 ```sh
 mdir /data/{instance,isos}
