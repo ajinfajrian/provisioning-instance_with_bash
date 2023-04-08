@@ -118,7 +118,7 @@ EOF
     # cloud-localds not supported on rhel, rocky, alma.
     # cloud-localds -v $VOLUME_POOL/$NAME/cloud-init.iso $VOLUME_POOL/$NAME/user-data $VOLUME_POOL/$NAME/meta-data
     
-    genisoimage  -output /kvm/instance/$NAME/cloud-init.iso -volid cidata -joliet -rock /kvm/instance/$NAME/user-data /kvm/instance/$NAME/meta-data
+    genisoimage  -output $VOLUME_POOL/$NAME/cloud-init.iso -volid cidata -joliet -rock $VOLUME_POOL/$NAME/user-data $VOLUME_POOL/$NAME/meta-data
     
     printf "\n =========== Configure Network =========== \n\n"
     virsh net-update $NET_NAME add ip-dhcp-host --xml "<host mac='$MAC' name='$NAME' ip='$IP'/>" --live --config
