@@ -17,7 +17,7 @@ Before using the script, make sure the following requirements are met:
 ```bash
 # for debian, ubuntu, etc
 sudo apt install -y genisoimage bridge-utils cpu-checker libvirt-clients libvirt-daemon libvirt-daemon-system
- qemu qemu-kvm virt-manager
+ qemu qemu-kvm virt-manager randmac
 
 # for rhel, rocky, alma, etc
 sudo dnf groupinstall "Virtualization Host"
