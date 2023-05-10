@@ -15,7 +15,7 @@ cat > ./net-$NET_SUB.xml << EOF
   <name>$PRE_NET_NAME</name>
   <forward mode='route'/>
   <bridge name='virbr$ID_NET' stp='on' delay='0'/>
-  <ip address='$NET_SUB.0' netmask='255.255.255.0'>
+  <ip address='$NET_SUB.1' netmask='255.255.255.0'>
     <dhcp>
       <range start='$NET_SUB.5' end='$NET_SUB.254'/>
     </dhcp>
